@@ -180,17 +180,17 @@
           <div class="row2">
             <div>
               <label>Origem *</label>
-              <input id="origem" placeholder="Ex: Rio de Janeiro (RIO)" />
+              <input id="origem" placeholder="Ex: Belo Horizonte" />
             </div>
             <div>
               <label>Destino *</label>
-              <input id="destino" placeholder="Ex: Salvador (SSA)" />
+              <input id="destino" placeholder="Ex: Porto Alegre" />
             </div>
           </div>
 
           <div>
             <label>Companhia</label>
-            <input id="cia" placeholder="Ex: LATAM" />
+            <input id="cia" placeholder="Ex: AZUL" />
           </div>
 
           <div class="row2">
@@ -236,7 +236,8 @@
           </div>
 
           <div class="balloon" id="malaInfo">
-            <strong>Importante:</strong> os alertas são sempre com bagagem de mão (10kg). Se desejar incluir mala despachada (23kg), é um adicional cobrado pela companhia, em viagens internacionais a partir de US$ 100 por trecho, em viagens nacionais a partir de R$ 185 por trecho.
+            <strong>Bagagem:</strong> os alertas são sempre de tarifa sem mala despachada (tarifa Light/Básica). A bagagem padrão é mala de mão (10kg).
+            Se desejar incluir mala despachada (23kg), é um adicional cobrado pela companhia, em viagens internacionais a partir de US$ 100 por trecho, em viagens nacionais a partir de R$ 185 por trecho.
           </div>
 
           <div>
@@ -247,7 +248,7 @@
           <button class="btn" id="enviar">Enviar</button>
 
           <div class="note">
-            Se aparecer origem com %20 é porque o link veio codificado. Esta versão decodifica automaticamente.
+            Esta página aceita link “grande” (idas/voltas) e link “compacto” (i/r e v em centavos).
           </div>
 
         </div>
@@ -268,6 +269,35 @@
     function splitList(raw){
       if(!raw) return [];
       return String(raw).split(",").map(s => s.trim()).filter(Boolean);
+    }
+
+    // Link compacto:
+    // i=260312|260411|...   r=260315|...
+    // v=52200 (centavos)
+    function parseCompactDates(raw){
+      if(!raw) return [];
+      return String(raw).split("|").map(s => s.trim()).filter(Boolean).map(x => {
+        // aceita AAMMDD (6) ou AAAAMMDD (8)
+        if(x.length === 6){
+          const yy = x.slice(0,2);
+          const mm = x.slice(2,4);
+          const dd = x.slice(4,6);
+          return `${dd}/${mm}/20${yy}`;
+        }
+        if(x.length === 8){
+          const yyyy = x.slice(0,4);
+          const mm = x.slice(4,6);
+          const dd = x.slice(6,8);
+          return `${dd}/${mm}/${yyyy}`;
+        }
+        return x;
+      });
+    }
+
+    function formatCentsToBRL(cents){
+      const n = Number(cents);
+      if(!Number.isFinite(n)) return "";
+      return (n/100).toFixed(2).replace(".", ",");
     }
 
     function fillSelect(selectEl, items){
@@ -292,12 +322,21 @@
       return "R$ " + s;
     }
 
-    const origemP = getParam("origem","");
-    const destinoP = getParam("destino","");
-    const ciaP = getParam("cia","");
-    const valorP = getParam("valor","");
-    const idasP = splitList(getParam("idas",""));
-    const voltasP = splitList(getParam("voltas",""));
+    // Prioriza o formato antigo (origem/destino/cia/valor/idas/voltas),
+    // mas se não vier, usa o formato compacto (o/d/c/v/i/r).
+    const origemP = getParam("origem","") || getParam("o","");
+    const destinoP = getParam("destino","") || getParam("d","");
+    const ciaP = getParam("cia","") || getParam("c","");
+
+    const valorOld = getParam("valor","");
+    const valorCompact = formatCentsToBRL(getParam("v",""));
+    const valorP = valorOld || valorCompact;
+
+    const idasOld = getParam("idas","");
+    const voltasOld = getParam("voltas","");
+    const idasP = idasOld ? splitList(idasOld) : parseCompactDates(getParam("i",""));
+    const voltasP = voltasOld ? splitList(voltasOld) : parseCompactDates(getParam("r",""));
+
     const refP = getParam("ref","sem_ref");
 
     document.getElementById("origem").value = origemP;
@@ -312,15 +351,11 @@
     fillSelect(document.getElementById("ida"), idasP);
     fillSelect(document.getElementById("volta"), voltasP);
 
-    // Balão da mala despachada
+    // Balão mala despachada
     const malaSel = document.getElementById("mala");
     const malaInfo = document.getElementById("malaInfo");
     function toggleMalaInfo(){
-      if(malaSel.value === "Sim"){
-        malaInfo.style.display = "block";
-      } else {
-        malaInfo.style.display = "none";
-      }
+      malaInfo.style.display = (malaSel.value === "Sim") ? "block" : "none";
     }
     malaSel.addEventListener("change", toggleMalaInfo);
     toggleMalaInfo();
@@ -350,7 +385,7 @@
       linhas.push("Adultos: " + adultos);
       linhas.push("Crianças: " + criancas);
       linhas.push("Bebês: " + bebes);
-      linhas.push("Mala despachada: " + mala);
+      linhas.push("Solicita mala 23kg: " + mala + (mala === "Sim" ? " (ciente de adicional)" : ""));
       if(obs) linhas.push("Obs: " + obs);
 
       return linhas.join("\n");
