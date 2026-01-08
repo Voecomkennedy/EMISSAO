@@ -131,6 +131,18 @@
       font-size: 12px;
       line-height: 1.45;
     }
+
+    .balloon{
+      display:none;
+      border: 1px solid rgba(241,210,138,.35);
+      background: rgba(201,162,75,.10);
+      padding: 10px 12px;
+      border-radius: 14px;
+      color: rgba(232,237,244,.86);
+      font-size: 12.5px;
+      line-height: 1.45;
+    }
+    .balloon strong{ color: var(--gold2); }
   </style>
 </head>
 
@@ -176,15 +188,9 @@
             </div>
           </div>
 
-          <div class="row2">
-            <div>
-              <label>Companhia</label>
-              <input id="cia" placeholder="Ex: GOL" />
-            </div>
-            <div>
-              <label>Datas na promoção</label>
-              <input id="resumoDatas" readonly />
-            </div>
+          <div>
+            <label>Companhia</label>
+            <input id="cia" placeholder="Ex: LATAM" />
           </div>
 
           <div class="row2">
@@ -227,6 +233,10 @@
                 <option value="Sim">Sim</option>
               </select>
             </div>
+          </div>
+
+          <div class="balloon" id="malaInfo">
+            <strong>Importante:</strong> os alertas são sempre com bagagem de mão (10kg). Se desejar incluir mala despachada (23kg), é um adicional cobrado pela companhia, em viagens internacionais a partir de US$ 100 por trecho, em viagens nacionais a partir de R$ 185 por trecho.
           </div>
 
           <div>
@@ -282,7 +292,6 @@
       return "R$ " + s;
     }
 
-    // Params esperados
     const origemP = getParam("origem","");
     const destinoP = getParam("destino","");
     const ciaP = getParam("cia","");
@@ -291,28 +300,31 @@
     const voltasP = splitList(getParam("voltas",""));
     const refP = getParam("ref","sem_ref");
 
-    // Preenche campos
     document.getElementById("origem").value = origemP;
     document.getElementById("destino").value = destinoP;
     document.getElementById("cia").value = ciaP;
 
-    // Topo identificador
     const rotaTopo = (origemP && destinoP) ? (origemP + " → " + destinoP) : "Origem → Destino";
     document.getElementById("rotaTopo").textContent = rotaTopo;
     document.getElementById("valorTopo").textContent = "Valor do alerta: " + money(valorP);
     document.getElementById("refTopo").textContent = "ref: " + refP;
 
-    // Resumo datas
-    const resumo = [];
-    if(idasP.length) resumo.push("Idas: " + idasP.join(" | "));
-    if(voltasP.length) resumo.push("Voltas: " + voltasP.join(" | "));
-    document.getElementById("resumoDatas").value = resumo.join(" • ");
-
-    // Travar selects apenas nas datas do alerta
     fillSelect(document.getElementById("ida"), idasP);
     fillSelect(document.getElementById("volta"), voltasP);
 
-    // Mensagem WhatsApp
+    // Balão da mala despachada
+    const malaSel = document.getElementById("mala");
+    const malaInfo = document.getElementById("malaInfo");
+    function toggleMalaInfo(){
+      if(malaSel.value === "Sim"){
+        malaInfo.style.display = "block";
+      } else {
+        malaInfo.style.display = "none";
+      }
+    }
+    malaSel.addEventListener("change", toggleMalaInfo);
+    toggleMalaInfo();
+
     function buildMessage(){
       const nome = document.getElementById("nome").value.trim();
       const origem = document.getElementById("origem").value.trim();
