@@ -1,274 +1,365 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cotação - Voe com Kennedy</title>
-    <style>
-        /* Estilo Base inspirado no seu site */
-        body {
-            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-            background-color: #f4f4f4;
-            color: #333;
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            justify-content: center;
-        }
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="theme-color" content="#0b0f14" />
+  <title>Voecomkennedy | Emissão</title>
+  <meta name="description" content="Selecione as datas do alerta e envie no WhatsApp com tudo preenchido." />
 
-        .container {
-            background-color: #fff;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            max-width: 500px;
-            width: 100%;
-        }
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230b0f14'/%3E%3Cpath d='M20 46V18h7v11l10-11h9L34 31l12 15h-9l-10-12v12z' fill='%23c9a24b'/%3E%3Cpath d='M18 34l28-11-11 28-3.4-10.8L18 34z' fill='%23f1d28a' opacity='.85'/%3E%3C/svg%3E" />
 
-        h2 {
-            text-align: center;
-            color: #0044cc;
-            margin-bottom: 20px;
-        }
+  <style>
+    :root{
+      --bg:#0b0f14;
+      --text:#e8edf4;
+      --muted:rgba(232,237,244,.72);
+      --line:rgba(232,237,244,.14);
+      --gold:#c9a24b;
+      --gold2:#f1d28a;
+      --shadow: 0 18px 50px rgba(0,0,0,.45);
+      --radius: 18px;
+      --max: 720px;
+    }
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; }
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      background:
+        radial-gradient(1200px 650px at 10% 0%, rgba(201,162,75,.18), transparent 60%),
+        radial-gradient(900px 520px at 90% 10%, rgba(30,79,255,.14), transparent 55%),
+        linear-gradient(180deg, #06080b, var(--bg) 35%, #06080b 100%);
+      color: var(--text);
+      -webkit-font-smoothing: antialiased;
+      text-rendering: geometricPrecision;
+    }
+    .wrap{ max-width: var(--max); margin: 0 auto; padding: 18px; }
 
-        .form-group {
-            margin-bottom: 15px;
-        }
+    .top{
+      display:flex; align-items:center; justify-content:space-between;
+      gap:12px; padding: 10px 0 14px; flex-wrap: wrap;
+    }
+    .brand strong{ display:block; font-size: 14px; letter-spacing:.2px; }
+    .brand span{ display:block; font-size: 12px; color: var(--muted); margin-top: 2px; }
+    .chip{
+      display:inline-flex; align-items:center; gap:8px;
+      padding: 9px 12px; border-radius: 999px;
+      border: 1px solid var(--line);
+      background: rgba(17,27,39,.55);
+      color: var(--muted);
+      font-size: 12.5px;
+      white-space: nowrap;
+    }
 
-        label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-            font-size: 14px;
-        }
+    .card{
+      background: linear-gradient(180deg, rgba(17,27,39,.85), rgba(15,22,32,.78));
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+      position:relative;
+    }
+    .card::before{
+      content:"";
+      position:absolute; inset:-2px;
+      background: radial-gradient(520px 240px at 20% 0%, rgba(201,162,75,.20), transparent 60%);
+      pointer-events:none; opacity:.9;
+    }
+    .inner{ position:relative; padding: 18px; }
 
-        input, select {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            box-sizing: border-box; /* Garante que o padding não quebre o layout */
-            font-size: 16px;
-        }
+    h1{ margin:0 0 10px; font-size: 26px; letter-spacing:-.5px; line-height:1.1; }
+    .sub{ margin:0 0 14px; color: var(--muted); font-size: 14.5px; line-height:1.55; }
 
-        .hidden {
-            display: none;
-        }
+    .idbox{
+      border: 1px solid rgba(201,162,75,.35);
+      background: rgba(201,162,75,.10);
+      padding: 10px 12px;
+      border-radius: 14px;
+      margin: 10px 0 14px;
+      display:flex; flex-direction:column; gap:6px;
+    }
+    .idbox .topline{
+      display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap: wrap;
+      font-size: 12.5px; color: rgba(232,237,244,.86);
+    }
+    .idbox .ref{
+      color: var(--gold2);
+      font-weight: 900;
+      letter-spacing: .2px;
+      word-break: break-word;
+    }
 
-        .alert-box {
-            background-color: #e8f0fe;
-            color: #1a73e8;
-            padding: 10px;
-            border-radius: 6px;
-            font-size: 13px;
-            margin-bottom: 15px;
-            border-left: 4px solid #1a73e8;
-        }
+    label{ display:block; font-size: 12.5px; color: rgba(232,237,244,.82); margin: 0 0 6px; }
+    input, select, textarea{
+      width:100%;
+      padding: 12px 12px;
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      background: rgba(10,14,20,.40);
+      color: var(--text);
+      outline:none;
+      font-size: 14px;
+    }
+    textarea{ min-height: 90px; resize: vertical; }
 
-        button {
-            width: 100%;
-            padding: 15px;
-            background-color: #25d366;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 18px;
-            font-weight: bold;
-            cursor: pointer;
-            margin-top: 10px;
-            transition: background 0.3s;
-        }
+    .grid{ display:grid; gap:12px; }
+    .row2{ display:grid; grid-template-columns: 1fr 1fr; gap:12px; }
+    @media (max-width: 420px){ .row2{ grid-template-columns: 1fr; } }
 
-        button:hover {
-            background-color: #1ebe57;
-        }
+    .btn{
+      display:inline-flex; align-items:center; justify-content:center;
+      padding: 14px 16px;
+      border-radius: 14px;
+      border: 1px solid rgba(201,162,75,.45);
+      background: linear-gradient(180deg, rgba(201,162,75,.26), rgba(201,162,75,.12));
+      color: var(--text);
+      font-weight: 900;
+      letter-spacing: .2px;
+      cursor:pointer;
+      width: 100%;
+      transition: transform .08s ease, filter .08s ease, border-color .12s ease;
+      user-select:none;
+      margin-top: 6px;
+    }
+    .btn:hover{ transform: translateY(-1px); filter: brightness(1.06); border-color: rgba(241,210,138,.65); }
+    .btn:active{ transform: translateY(0px); filter: brightness(.98); }
 
-        .footer {
-            text-align: center;
-            font-size: 12px;
-            color: #777;
-            margin-top: 20px;
-        }
-    </style>
+    .note{
+      margin-top: 10px;
+      color: rgba(232,237,244,.55);
+      font-size: 12px;
+      line-height: 1.45;
+    }
+  </style>
 </head>
+
 <body>
+  <div class="wrap">
 
-    <div class="container">
-        <h2>✈️ Dados da Viagem</h2>
-        <p style="text-align:center; font-size:14px; margin-bottom:20px;">Preencha para finalizar seu atendimento no WhatsApp.</p>
-
-        <div class="form-group">
-            <label>Nome Completo *</label>
-            <input type="text" id="nome" placeholder="Seu nome">
-        </div>
-
-        <div class="form-group">
-            <label>Origem *</label>
-            <input type="text" id="origem" placeholder="Cidade de origem">
-        </div>
-
-        <div class="form-group">
-            <label>Destino *</label>
-            <input type="text" id="destino" placeholder="Cidade de destino">
-        </div>
-
-        <div class="alert-box">
-            <strong>Datas na Promoção:</strong> Verifique a disponibilidade.
-        </div>
-
-        <div class="form-group">
-            <label>Data de Ida *</label>
-            <input type="date" id="dataIda">
-        </div>
-
-        <div class="form-group">
-            <label>Data de Volta</label>
-            <input type="date" id="dataVolta">
-        </div>
-
-        <div class="form-group">
-            <label>Adultos (+12 anos)</label>
-            <select id="adultos">
-                <option value="1 Adulto">1 Adulto</option>
-                <option value="2 Adultos">2 Adultos</option>
-                <option value="3 Adultos">3 Adultos</option>
-                <option value="4 Adultos">4 Adultos</option>
-                <option value="5+ Adultos">5+ Adultos</option>
-            </select>
-        </div>
-
-        <div class="form-group">
-            <label>Crianças (2 a 11 anos)</label>
-            <select id="criancas">
-                <option value="0">0</option>
-                <option value="1 Criança">1 Criança</option>
-                <option value="2 Crianças">2 Crianças</option>
-                <option value="3+ Crianças">3+ Crianças</option>
-            </select>
-        </div>
-
-        <div class="form-group">
-            <label>Bebês (0 a 23 meses)</label>
-            <select id="bebes">
-                <option value="Não viaja com bebê">Não viaja com bebê</option>
-                <option value="1 Bebê de colo">1 Bebê de colo</option>
-                <option value="2 Bebês de colo">2 Bebês de colo</option>
-            </select>
-        </div>
-
-        <div class="form-group">
-            <label>Mala Despachada (23kg)?</label>
-            <select id="malaOption" onchange="toggleMalaField()">
-                <option value="nao">Não (Somente mala de mão 10kg)</option>
-                <option value="sim">Sim, desejo incluir</option>
-            </select>
-        </div>
-
-        <div class="form-group hidden" id="divQtdMalas">
-            <div class="alert-box" style="background-color: #fff3cd; color: #856404; border-left-color: #ffeeba;">
-                <strong>Atenção:</strong> Custo extra a partir de U$ 100,00 por trecho.
-            </div>
-            <label>Quantas malas ao todo?</label>
-            <select id="qtdMalas">
-                <option value="1 Mala Total">1 Mala Total</option>
-                <option value="2 Malas Totais">2 Malas Totais</option>
-                <option value="1 Mala Para Cada Passageiro">1 Mala Para Cada Passageiro</option>
-            </select>
-        </div>
-
-        <button onclick="enviarWhatsApp()">Enviar Solicitação 📲</button>
-        
-        <div class="footer">Voe com Kennedy - Cotações Personalizadas</div>
+    <div class="top">
+      <div class="brand">
+        <strong>Voecomkennedy</strong>
+        <span>Emissão, selecione e envie no WhatsApp</span>
+      </div>
+      <div class="chip">WhatsApp oficial, 556296448671</div>
     </div>
 
-    <script>
-        // Função para mostrar/esconder campo de malas
-        function toggleMalaField() {
-            var opcao = document.getElementById("malaOption").value;
-            var divMalas = document.getElementById("divQtdMalas");
-            if (opcao === "sim") {
-                divMalas.style.display = "block";
-            } else {
-                divMalas.style.display = "none";
-            }
-        }
+    <div class="card">
+      <div class="inner">
+        <h1>Garanta sua vaga</h1>
+        <p class="sub">Selecione apenas as datas do alerta e finalize no WhatsApp com tudo preenchido.</p>
 
-        // Função Principal de Envio
-        function enviarWhatsApp() {
-            // 1. Captura os valores
-            var nome = document.getElementById("nome").value;
-            var origem = document.getElementById("origem").value;
-            var destino = document.getElementById("destino").value;
-            var dataIda = document.getElementById("dataIda").value;
-            var dataVolta = document.getElementById("dataVolta").value;
-            
-            // Formatar datas para o padrão brasileiro (Dia/Mês/Ano)
-            if(dataIda) {
-                var dI = new Date(dataIda);
-                dataIda = dI.toLocaleDateString('pt-BR', {timeZone: 'UTC'});
-            }
-            if(dataVolta) {
-                var dV = new Date(dataVolta);
-                dataVolta = dV.toLocaleDateString('pt-BR', {timeZone: 'UTC'});
-            } else {
-                dataVolta = "Não informado / Somente Ida";
-            }
+        <div class="idbox">
+          <div class="topline">
+            <span id="rotaTopo">Origem → Destino</span>
+            <span id="valorTopo">Valor do alerta: R$ 0,00</span>
+          </div>
+          <div class="ref" id="refTopo">ref: sem_ref</div>
+        </div>
 
-            var adultos = document.getElementById("adultos").value;
-            var criancas = document.getElementById("criancas").value;
-            var bebes = document.getElementById("bebes").value;
-            
-            // Lógica das Malas
-            var temMala = document.getElementById("malaOption").value;
-            var textoMala = "Somente mala de mão (10kg)";
-            if(temMala === "sim") {
-                var qtd = document.getElementById("qtdMalas").value;
-                textoMala = "Sim, desejo incluir: " + qtd;
-            }
+        <div class="grid">
 
-            // 2. Monta a Mensagem (LAYOUT LIMPO E ESPAÇADO)
-            // \n pula uma linha. \n\n pula duas linhas (deixa o espaço em branco).
-            
-            var msg = "*Nova Solicitação de Cotação*";
-            msg += "\n\n"; // Espaço
-            
-            msg += "Olá, meu nome é *" + nome + "* e gostaria de uma cotação.";
-            msg += "\n\n"; // Espaço
+          <div>
+            <label>Nome completo *</label>
+            <input id="nome" placeholder="Seu nome" />
+          </div>
 
-            msg += "✈️ *Rota Solicitada*";
-            msg += "\n";
-            msg += "De: *" + origem + "*";
-            msg += "\n";
-            msg += "Para: *" + destino + "*";
-            msg += "\n\n"; // Espaço
+          <div class="row2">
+            <div>
+              <label>Origem *</label>
+              <input id="origem" placeholder="Ex: Rio de Janeiro (RIO)" />
+            </div>
+            <div>
+              <label>Destino *</label>
+              <input id="destino" placeholder="Ex: Salvador (SSA)" />
+            </div>
+          </div>
 
-            msg += "📅 *Datas*";
-            msg += "\n";
-            msg += "Ida: " + dataIda;
-            msg += "\n";
-            msg += "Volta: " + dataVolta;
-            msg += "\n\n"; // Espaço
+          <div class="row2">
+            <div>
+              <label>Companhia</label>
+              <input id="cia" placeholder="Ex: GOL" />
+            </div>
+            <div>
+              <label>Datas na promoção</label>
+              <input id="resumoDatas" readonly />
+            </div>
+          </div>
 
-            msg += "👥 *Passageiros*";
-            msg += "\n";
-            msg += "Adultos: " + adultos;
-            if(criancas !== "0") msg += "\nCrianças: " + criancas;
-            if(bebes !== "Não viaja com bebê") msg += "\nBebês: " + bebes;
-            msg += "\n\n"; // Espaço
+          <div class="row2">
+            <div>
+              <label>Data de ida *</label>
+              <select id="ida"></select>
+            </div>
+            <div>
+              <label>Data de volta *</label>
+              <select id="volta"></select>
+            </div>
+          </div>
 
-            msg += "🧳 *Bagagem*";
-            msg += "\n";
-            msg += textoMala;
-            
-            // 3. Cria o Link e Abre
-            // Substitua o número abaixo pelo seu número real com DDI e DDD (ex: 5511999999999)
-            var telefone = "5562999999999"; 
-            
-            var url = "https://api.whatsapp.com/send?phone=" + telefone + "&text=" + encodeURIComponent(msg);
-            
-            window.open(url, '_blank');
-        }
-    </script>
+          <div class="row2">
+            <div>
+              <label>Adultos (+12 anos)</label>
+              <select id="adultos">
+                <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option>
+              </select>
+            </div>
+            <div>
+              <label>Crianças (2 a 11 anos)</label>
+              <select id="criancas">
+                <option>0</option><option>1</option><option>2</option><option>3</option><option>4</option>
+              </select>
+            </div>
+          </div>
 
+          <div class="row2">
+            <div>
+              <label>Bebês (0 a 23 meses)</label>
+              <select id="bebes">
+                <option value="0">0</option><option value="1">1</option><option value="2">2</option>
+              </select>
+            </div>
+            <div>
+              <label>Mala despachada (23kg)</label>
+              <select id="mala">
+                <option value="Não">Não (somente mala de mão)</option>
+                <option value="Sim">Sim</option>
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <label>Observações (opcional)</label>
+            <textarea id="obs" placeholder="Ex: preferência de horário, aeroporto, etc."></textarea>
+          </div>
+
+          <button class="btn" id="enviar">Enviar</button>
+
+          <div class="note">
+            Se aparecer origem com %20 é porque o link veio codificado. Esta versão decodifica automaticamente.
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    const WHATSAPP_NUMBER = "556296448671";
+
+    function getParam(name, fallback=""){
+      const v = new URLSearchParams(window.location.search).get(name);
+      if(v === null || v === undefined || v === "") return fallback;
+      try { return decodeURIComponent(v); } catch(e) { return v; }
+    }
+
+    function splitList(raw){
+      if(!raw) return [];
+      return String(raw).split(",").map(s => s.trim()).filter(Boolean);
+    }
+
+    function fillSelect(selectEl, items){
+      selectEl.innerHTML = "";
+      const first = document.createElement("option");
+      first.value = "";
+      first.textContent = "Selecione";
+      selectEl.appendChild(first);
+
+      for(const it of items){
+        const opt = document.createElement("option");
+        opt.value = it;
+        opt.textContent = it;
+        selectEl.appendChild(opt);
+      }
+    }
+
+    function money(raw){
+      if(!raw) return "R$ 0,00";
+      const s = String(raw).trim();
+      if(s.toLowerCase().includes("r$")) return s;
+      return "R$ " + s;
+    }
+
+    // Params esperados
+    const origemP = getParam("origem","");
+    const destinoP = getParam("destino","");
+    const ciaP = getParam("cia","");
+    const valorP = getParam("valor","");
+    const idasP = splitList(getParam("idas",""));
+    const voltasP = splitList(getParam("voltas",""));
+    const refP = getParam("ref","sem_ref");
+
+    // Preenche campos
+    document.getElementById("origem").value = origemP;
+    document.getElementById("destino").value = destinoP;
+    document.getElementById("cia").value = ciaP;
+
+    // Topo identificador
+    const rotaTopo = (origemP && destinoP) ? (origemP + " → " + destinoP) : "Origem → Destino";
+    document.getElementById("rotaTopo").textContent = rotaTopo;
+    document.getElementById("valorTopo").textContent = "Valor do alerta: " + money(valorP);
+    document.getElementById("refTopo").textContent = "ref: " + refP;
+
+    // Resumo datas
+    const resumo = [];
+    if(idasP.length) resumo.push("Idas: " + idasP.join(" | "));
+    if(voltasP.length) resumo.push("Voltas: " + voltasP.join(" | "));
+    document.getElementById("resumoDatas").value = resumo.join(" • ");
+
+    // Travar selects apenas nas datas do alerta
+    fillSelect(document.getElementById("ida"), idasP);
+    fillSelect(document.getElementById("volta"), voltasP);
+
+    // Mensagem WhatsApp
+    function buildMessage(){
+      const nome = document.getElementById("nome").value.trim();
+      const origem = document.getElementById("origem").value.trim();
+      const destino = document.getElementById("destino").value.trim();
+      const cia = document.getElementById("cia").value.trim();
+      const ida = document.getElementById("ida").value.trim();
+      const volta = document.getElementById("volta").value.trim();
+      const adultos = document.getElementById("adultos").value;
+      const criancas = document.getElementById("criancas").value;
+      const bebes = document.getElementById("bebes").value;
+      const mala = document.getElementById("mala").value;
+      const obs = document.getElementById("obs").value.trim();
+
+      const linhas = [];
+      linhas.push("Desejo emitir este alerta.");
+      linhas.push("ref: " + refP);
+      if(origem && destino) linhas.push("Trecho: " + origem + " → " + destino);
+      if(cia) linhas.push("Companhia: " + cia);
+      if(valorP) linhas.push("Valor do alerta: " + money(valorP));
+      if(ida) linhas.push("Ida: " + ida);
+      if(volta) linhas.push("Volta: " + volta);
+      linhas.push("Nome: " + nome);
+      linhas.push("Adultos: " + adultos);
+      linhas.push("Crianças: " + criancas);
+      linhas.push("Bebês: " + bebes);
+      linhas.push("Mala despachada: " + mala);
+      if(obs) linhas.push("Obs: " + obs);
+
+      return linhas.join("\n");
+    }
+
+    document.getElementById("enviar").addEventListener("click", () => {
+      const nome = document.getElementById("nome").value.trim();
+      const origem = document.getElementById("origem").value.trim();
+      const destino = document.getElementById("destino").value.trim();
+      const ida = document.getElementById("ida").value.trim();
+      const volta = document.getElementById("volta").value.trim();
+
+      if(!nome || !origem || !destino || !ida || !volta){
+        alert("Preencha Nome, Origem, Destino, Data de ida e Data de volta.");
+        return;
+      }
+
+      const msg = buildMessage();
+      const url = "https://wa.me/" + WHATSAPP_NUMBER + "?text=" + encodeURIComponent(msg);
+      window.open(url, "_blank");
+    });
+  </script>
 </body>
 </html>
