@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voe com Kennedy - Reserva</title>
+    <style>
+        :root {
+            --bg-color: #0d0d0d;
+            --card-color: #161616;
+            --input-bg: #222;
+            --text-color: #e0e0e0;
+            --text-muted: #888;
+            --accent-color: #bf9b30; /* Dourado */
+            --accent-hover: #d4af37;
+            --error-color: #ff4444;
+            --border-color: #333;
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container { width: 100%; max-width: 500px; }
+
+        .card {
+            background-color: var(--card-color);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 30px rgba(0,0,0,0.5);
+        }
+
+        .kicker {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--text-muted);
+            font-weight: 700;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        h1 { margin: 0 0 10px 0; font-size: 22px; font-weight: 700; color: #fff; }
+
+        p.subtitle { color: var(--text-muted); font-size: 13px; margin-bottom: 25px; line-height: 1.4; }
+
+        .form-group { margin-bottom: 15px; }
+        .row { display: flex; gap: 15px; }
+        .row .form-group { flex: 1; }
+
+        label { display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 6px; font-weight: 600; }
+
+        input, select {
+            width: 100%;
+            background-color: var(--input-bg);
+            border: 1px solid var(--border-color);
+            color: #fff;
+            padding: 14px;
+            border-radius: 6px;
+            font-size: 15px;
+            box-sizing: border-box;
+            transition: 0.2s;
+            appearance: none;
+        }
+        
+        input:read-only {
+            background-color: #1a1a1a;
+            color: #bf9b30;
+            border-color: #333;
+            cursor: not-allowed;
+            font-weight: bold;
+        }
+
+        select {
+            background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23bf9b30%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+            background-repeat: no-repeat;
+            background-position: right 15px top 50%;
+            background-size: 12px auto;
+        }
+
+        input:focus, select:focus { outline: none; border-color: var(--accent-color); background-color: #2a2a2a; }
+
+        #offer-banner {
+            display: none;
+            background: rgba(191, 155, 48, 0.1);
+            border: 1px solid var(--accent-color);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        #offer-text { color: var(--accent-color); font-weight: bold; font-size: 1.1em; }
+
+        #dates-hint-box {
+            display: none;
+            background-color: #222;
+            border-left: 3px solid #fff;
+            padding: 10px;
+            margin-bottom: 15px;
+            font-size: 12px;
+            color: #ccc;
+        }
+
+        #baggage-options {
+            display: none;
+            background-color: #1f1f1f;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+            border-left: 3px solid var(--accent-color);
+        }
+        .warning-text { font-size: 12px; color: #e6c670; margin-bottom: 10px; line-height: 1.4; }
+
+        #limit-alert {
+            display: none;
+            background-color: rgba(255, 68, 68, 0.1);
+            border: 1px solid var(--error-color);
+            color: var(--error-color);
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 10px;
+            font-size: 13px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 16px;
+            background-color: var(--accent-color);
+            color: #111;
+            font-weight: 800;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: 0.3s;
+        }
+        .btn-submit:hover { background-color: var(--accent-hover); transform: translateY(-1px); }
+        .btn-submit:disabled { background-color: #444; color: #888; cursor: not-allowed; transform: none; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="card">
+            <span class="kicker" id="page-kicker">COTAÇÃO</span>
+            <h1 id="page-title">Dados da Viagem</h1>
+            <p class="subtitle">Preencha para finalizar seu atendimento no WhatsApp.</p>
+
+            <div id="offer-banner"><div id="offer-text"></div></div>
+
+            <form onsubmit="enviarZap(event)">
+                <div class="form-group">
+                    <label>Nome Completo *</label>
+                    <input type="text" id="nome" placeholder="Seu nome" required>
+                </div>
+
+                <div class="row">
+                    <div class="form-group">
+                        <label>Origem *</label>
+                        <input type="text" id="origem" placeholder="Ex: GYN" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Destino *</label>
+                        <input type="text" id="destino" placeholder="Ex: CWB" required>
+                    </div>
+                </div>
+
+                <div id="dates-hint-box">
+                    <strong>Datas na Promoção:</strong><br>
+                    <span id="dates-hint-text"></span>
+                </div>
+
+                <div class="row">
+                    <div class="form-group">
+                        <label>Data de Ida *</label>
+                        <input type="date" id="dataIda" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Data de Volta</label>
+                        <input type="date" id="dataVolta">
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="form-group">
+                        <label>Adultos (+12 anos)</label>
+                        <select id="adultos" onchange="validarLimite()">
+                            <option value="1">1 Adulto</option>
+                            <option value="2">2 Adultos</option>
+                            <option value="3">3 Adultos</option>
+                            <option value="4">4 Adultos</option>
+                            <option value="5">5 Adultos</option>
+                            <option value="6">6 Adultos</option>
+                            <option value="7">7 Adultos</option>
+                            <option value="8">8 Adultos</option>
+                            <option value="9">9 Adultos</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Crianças (2 a 11 anos)</label>
+                        <select id="criancas" onchange="validarLimite()">
+                            <option value="0">0</option>
+                            <option value="1">1 Criança</option>
+                            <option value="2">2 Crianças</option>
+                            <option value="3">3 Crianças</option>
+                            <option value="4">4 Crianças</option>
+                            <option value="5">5 Crianças</option>
+                            <option value="6">6 Crianças</option>
+                            <option value="7">7 Crianças</option>
+                            <option value="8">8 Crianças</option>
+                            <option value="9">9 Crianças</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div id="limit-alert">
+                    Limite excedido! Máximo de 9 passageiros por reserva.
+                </div>
+
+                <div class="form-group">
+                    <label>Bebês (0 a 23 meses)</label>
+                    <select id="bebes">
+                        <option value="0">Não viaja com bebê</option>
+                        <option value="1">1 Bebê de colo</option>
+                        <option value="2">2 Bebês de colo</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Mala Despachada (23kg)?</label>
+                    <select id="bagagemSelect" onchange="toggleBagagem()">
+                        <option value="nao">Não (Somente mala de mão 10kg)</option>
+                        <option value="sim">Sim, desejo incluir</option>
+                    </select>
+                </div>
+
+                <div id="baggage-options">
+                    <div class="warning-text">
+                        <strong>Atenção:</strong> Custo extra a partir de <strong>U$ 100,00 por trecho</strong>.
+                    </div>
+                    <label>Quantas malas ao todo?</label>
+                    <select id="qtdMalas">
+                        <option value="1">1 Mala Total</option>
+                        <option value="2">2 Malas Totais</option>
+                        <option value="3">3 Malas Totais</option>
+                        <option value="4">4 Malas Totais</option>
+                        <option value="1pp">1 Mala Para Cada Passageiro</option>
+                    </select>
+                </div>
+
+                <button type="submit" id="btn-enviar" class="btn-submit">Enviar</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        
+        const origemUrl = decodeURIComponent(params.get('origem') || '');
+        const destinoUrl = decodeURIComponent(params.get('destino') || '');
+        const precoUrl = params.get('preco');
+        const datasUrl = decodeURIComponent(params.get('datas') || '');
+        
+        const idaFixa = params.get('ida');
+        const voltaFixa = params.get('volta');
+
+        if (precoUrl) {
+            document.getElementById('page-kicker').innerText = "OFERTA SELECIONADA";
+            document.getElementById('page-title').innerText = "Garanta sua vaga";
+            
+            const banner = document.getElementById('offer-banner');
+            banner.style.display = 'block';
+            document.getElementById('offer-text').innerHTML = `VALOR DO ALERTA: R$ ${precoUrl}`;
+
+            if(origemUrl) document.getElementById('origem').value = origemUrl;
+            if(destinoUrl) document.getElementById('destino').value = destinoUrl;
+
+            if (datasUrl) {
+                const datesBox = document.getElementById('dates-hint-box');
+                const datesText = document.getElementById('dates-hint-text');
+                datesBox.style.display = 'block';
+                datesText.innerText = datasUrl;
+            }
+
+            if (idaFixa) {
+                const inputIda = document.getElementById('dataIda');
+                inputIda.value = idaFixa;
+                inputIda.readOnly = true;
+            }
+            if (voltaFixa) {
+                const inputVolta = document.getElementById('dataVolta');
+                inputVolta.value = voltaFixa;
+                inputVolta.readOnly = true;
+            }
+        }
+
+        function validarLimite() {
+            const adultos = parseInt(document.getElementById('adultos').value);
+            const criancas = parseInt(document.getElementById('criancas').value);
+            const total = adultos + criancas;
+            const alerta = document.getElementById('limit-alert');
+            const botao = document.getElementById('btn-enviar');
+
+            if (total > 9) {
+                alerta.style.display = 'block';
+                botao.disabled = true;
+                botao.innerHTML = "Limite excedido (Máx 9)";
+            } else {
+                alerta.style.display = 'none';
+                botao.disabled = false;
+                botao.innerHTML = "Enviar";
+            }
+        }
+
+        function toggleBagagem() {
+            const select = document.getElementById('bagagemSelect');
+            const optionsDiv = document.getElementById('baggage-options');
+            if (select.value === 'sim') {
+                optionsDiv.style.display = 'block';
+            } else {
+                optionsDiv.style.display = 'none';
+            }
+        }
+
+        function enviarZap(e) {
+            e.preventDefault();
+
+            const nome = document.getElementById('nome').value;
+            const origem = document.getElementById('origem').value;
+            const destino = document.getElementById('destino').value;
+            const dataIda = document.getElementById('dataIda').value.split('-').reverse().join('/');
+            
+            const dataVoltaInput = document.getElementById('dataVolta').value;
+            const dataVolta = dataVoltaInput ? dataVoltaInput.split('-').reverse().join('/') : "Só Ida";
+            
+            const adultos = document.getElementById('adultos').value;
+            const criancas = document.getElementById('criancas').value;
+            const bebes = document.getElementById('bebes').value;
+
+            const querMala = document.getElementById('bagagemSelect').value === 'sim';
+            
+            let tituloMsg = precoUrl ? `*RESERVAR OFERTA* (R$ ${precoUrl})` : `*NOVA COTAÇÃO*`;
+            
+            // AQUI NO ZAP MANTIVE OS EMOJIS POIS VOCÊ DISSE QUE LÁ TUDO BEM
+            let mensagem = `${tituloMsg}\n\n`;
+            mensagem += `👤 *Nome:* ${nome}\n`;
+            mensagem += `✈️ *Trecho:* ${origem} ➡️ ${destino}\n`;
+            mensagem += `📅 *Ida:* ${dataIda}\n`;
+            mensagem += `📅 *Volta:* ${dataVolta}\n`;
+            mensagem += `👥 *Pax:* ${adultos} Adulto(s)`;
+            
+            if (criancas > 0) mensagem += `, ${criancas} Criança(s) 2-11a`;
+            if (bebes > 0) mensagem += `, ${bebes} Bebê(s) 0-2a`;
+            mensagem += `\n`;
+            
+            if (querMala) {
+                const qtdMalas = document.getElementById('qtdMalas');
+                const textoMala = qtdMalas.options[qtdMalas.selectedIndex].text;
+                mensagem += `🧳 *Bagagem:* SIM (${textoMala})\n`;
+                mensagem += `⚠️ _Ciente do custo extra_\n`;
+            } else {
+                mensagem += `🧳 *Bagagem:* Mão (10kg)\n`;
+            }
+
+            const telefone = "556296448671"; 
+            const url = `https://wa.me/${telefone}?text=${encodeURIComponent(mensagem)}`;
+            
+            window.open(url, '_blank');
+        }
+    </script>
+
+</body>
+</html>
