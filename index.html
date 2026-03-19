@@ -1,9 +1,175 @@
-<script>
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="theme-color" content="#0b0f14" />
+  <title>Voecomkennedy | Emissão</title>
+  <meta name="description" content="Selecione as datas do alerta e envie no WhatsApp com tudo preenchido." />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230b0f14'/%3E%3Cpath d='M20 46V18h7v11l10-11h9L34 31l12 15h-9l-10-12v12z' fill='%23c9a24b'/%3E%3Cpath d='M18 34l28-11-11 28-3.4-10.8L18 34z' fill='%23f1d28a' opacity='.85'/%3E%3C/svg%3E" />
+
+  <style>
+    :root{
+      --bg:#0b0f14;
+      --text:#e8edf4;
+      --muted:rgba(232,237,244,.72);
+      --line:rgba(232,237,244,.14);
+      --gold:#c9a24b;
+      --gold2:#f1d28a;
+      --shadow: 0 18px 50px rgba(0,0,0,.45);
+      --radius: 18px;
+      --max: 720px;
+    }
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; }
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      background:
+        radial-gradient(1200px 650px at 10% 0%, rgba(201,162,75,.18), transparent 60%),
+        radial-gradient(900px 520px at 90% 10%, rgba(30,79,255,.14), transparent 55%),
+        linear-gradient(180deg, #06080b, var(--bg) 35%, #06080b 100%);
+      color: var(--text);
+      -webkit-font-smoothing: antialiased;
+      text-rendering: geometricPrecision;
+    }
+    .wrap{ max-width: var(--max); margin: 0 auto; padding: 18px; }
+    .top{ display:flex; align-items:center; justify-content:space-between; gap:12px; padding: 10px 0 14px; flex-wrap: wrap; }
+    .brand strong{ display:block; font-size: 14px; letter-spacing:.2px; }
+    .brand span{ display:block; font-size: 12px; color: var(--muted); margin-top: 2px; }
+    .chip{ display:inline-flex; align-items:center; gap:8px; padding: 9px 12px; border-radius: 999px; border: 1px solid var(--line); background: rgba(17,27,39,.55); color: var(--muted); font-size: 12.5px; white-space: nowrap; }
+    .card{ background: linear-gradient(180deg, rgba(17,27,39,.85), rgba(15,22,32,.78)); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); overflow:hidden; position:relative; }
+    .card::before{ content:""; position:absolute; inset:-2px; background: radial-gradient(520px 240px at 20% 0%, rgba(201,162,75,.20), transparent 60%); pointer-events:none; opacity:.9; }
+    .inner{ position:relative; padding: 18px; }
+    h1{ margin:0 0 10px; font-size: 26px; letter-spacing:-.5px; line-height:1.1; }
+    .sub{ margin:0 0 14px; color: var(--muted); font-size: 14.5px; line-height:1.55; }
+    .idbox{ border: 1px solid rgba(201,162,75,.35); background: rgba(201,162,75,.10); padding: 10px 12px; border-radius: 14px; margin: 10px 0 14px; display:flex; flex-direction:column; gap:6px; }
+    .idbox .topline{ display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap: wrap; font-size: 12.5px; color: rgba(232,237,244,.86); }
+    .idbox .ref{ color: var(--gold2); font-weight: 900; letter-spacing: .2px; word-break: break-word; }
+    label{ display:block; font-size: 12.5px; color: rgba(232,237,244,.82); margin: 0 0 6px; }
+    input, select, textarea{ width:100%; padding: 12px 12px; border-radius: 14px; border: 1px solid var(--line); background: rgba(10,14,20,.40); color: var(--text); outline:none; font-size: 14px; }
+    textarea{ min-height: 90px; resize: vertical; }
+    .grid{ display:grid; gap:12px; }
+    .row2{ display:grid; grid-template-columns: 1fr 1fr; gap:12px; }
+    @media (max-width: 420px){ .row2{ grid-template-columns: 1fr; } }
+    .btn{ display:inline-flex; align-items:center; justify-content:center; padding: 14px 16px; border-radius: 14px; border: 1px solid rgba(201,162,75,.45); background: linear-gradient(180deg, rgba(201,162,75,.26), rgba(201,162,75,.12)); color: var(--text); font-weight: 900; letter-spacing: .2px; cursor:pointer; width: 100%; transition: transform .08s ease, filter .08s ease, border-color .12s ease; user-select:none; margin-top: 6px; }
+    .btn:hover{ transform: translateY(-1px); filter: brightness(1.06); border-color: rgba(241,210,138,.65); }
+    .btn:active{ transform: translateY(0px); filter: brightness(.98); }
+    .note{ margin-top: 10px; color: rgba(232,237,244,.55); font-size: 12px; line-height: 1.45; }
+    .balloon{ display:none; border: 1px solid rgba(241,210,138,.35); background: rgba(201,162,75,.10); padding: 10px 12px; border-radius: 14px; color: rgba(232,237,244,.86); font-size: 12.5px; line-height: 1.45; }
+    .balloon strong{ color: var(--gold2); }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <div class="top">
+      <div class="brand">
+        <strong>Voecomkennedy</strong>
+        <span>Emissão, selecione e envie no WhatsApp</span>
+      </div>
+      <div class="chip">WhatsApp oficial, 556296448671</div>
+    </div>
+
+    <div class="card">
+      <div class="inner">
+        <h1>Garanta sua vaga</h1>
+        <p class="sub">Selecione apenas as datas do alerta e finalize no WhatsApp com tudo preenchido.</p>
+
+        <div class="idbox">
+          <div class="topline">
+            <span id="rotaTopo">Origem → Destino</span>
+            <span id="valorTopo">Valor do alerta: R$ 0,00</span>
+          </div>
+          <div class="ref" id="refTopo">ref: sem_ref</div>
+        </div>
+
+        <div class="grid">
+          <div>
+            <label>Nome completo *</label>
+            <input id="nome" placeholder="Seu nome" />
+          </div>
+
+          <div class="row2">
+            <div>
+              <label>Origem *</label>
+              <input id="origem" placeholder="Ex: Belo Horizonte" />
+            </div>
+            <div>
+              <label>Destino *</label>
+              <input id="destino" placeholder="Ex: Porto Alegre" />
+            </div>
+          </div>
+
+          <div>
+            <label>Companhia</label>
+            <input id="cia" placeholder="Ex: AZUL" />
+          </div>
+
+          <div class="row2">
+            <div>
+              <label>Data de ida *</label>
+              <select id="ida"></select>
+            </div>
+            <div>
+              <label>Data de volta *</label>
+              <select id="volta"></select>
+            </div>
+          </div>
+
+          <div class="row2">
+            <div>
+              <label>Adultos (+12 anos)</label>
+              <select id="adultos">
+                <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option>
+              </select>
+            </div>
+            <div>
+              <label>Crianças (2 a 11 anos)</label>
+              <select id="criancas">
+                <option>0</option><option>1</option><option>2</option><option>3</option><option>4</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="row2">
+            <div>
+              <label>Bebês (0 a 23 meses)</label>
+              <select id="bebes">
+                <option value="0">0</option><option value="1">1</option><option value="2">2</option>
+              </select>
+            </div>
+            <div>
+              <label>Mala despachada (23kg)</label>
+              <select id="mala">
+                <option value="Não">Não (somente mala de mão)</option>
+                <option value="Sim">Sim</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="balloon" id="malaInfo">
+            <strong>Bagagem:</strong> os alertas são sempre de tarifa sem mala despachada (tarifa Light/Básica). A bagagem padrão é mala de mão (10kg).
+          </div>
+
+          <div>
+            <label>Observações (opcional)</label>
+            <textarea id="obs" placeholder="Ex: preferência de horário, aeroporto, etc."></textarea>
+          </div>
+
+          <button class="btn" id="enviar">Enviar</button>
+          <div class="note">Esta página aceita link “grande” e “compacto”.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
     const WHATSAPP_NUMBER = "556296448671";
 
     function getParam(name, fallback=""){
       const v = new URLSearchParams(window.location.search).get(name);
-      if(v === null || v === undefined || v === "") return fallback;
+      if(!v) return fallback;
       try { return decodeURIComponent(v); } catch(e) { return v; }
     }
 
@@ -16,16 +182,10 @@
       if(!raw) return [];
       return String(raw).split("|").map(s => s.trim()).filter(Boolean).map(x => {
         if(x.length === 6){
-          const yy = x.slice(0,2);
-          const mm = x.slice(2,4);
-          const dd = x.slice(4,6);
-          return `${dd}/${mm}/20${yy}`;
+          return `${x.slice(4,6)}/${x.slice(2,4)}/20${x.slice(0,2)}`;
         }
         if(x.length === 8){
-          const yyyy = x.slice(0,4);
-          const mm = x.slice(4,6);
-          const dd = x.slice(6,8);
-          return `${dd}/${mm}/${yyyy}`;
+          return `${x.slice(6,8)}/${x.slice(4,6)}/${x.slice(0,4)}`;
         }
         return x;
       });
@@ -38,16 +198,10 @@
     }
 
     function fillSelect(selectEl, items){
-      selectEl.innerHTML = "";
-      const first = document.createElement("option");
-      first.value = "";
-      first.textContent = "Selecione";
-      selectEl.appendChild(first);
-
+      selectEl.innerHTML = '<option value="">Selecione</option>';
       for(const it of items){
         const opt = document.createElement("option");
-        opt.value = it;
-        opt.textContent = it;
+        opt.value = opt.textContent = it;
         selectEl.appendChild(opt);
       }
     }
@@ -55,34 +209,24 @@
     function money(raw){
       if(!raw) return "R$ 0,00";
       const s = String(raw).trim();
-      if(s.toLowerCase().includes("r$")) return s;
-      return "R$ " + s;
+      return s.toLowerCase().includes("r$") ? s : "R$ " + s;
     }
 
-    const origemP = getParam("origem","") || getParam("o","");
-    const destinoP = getParam("destino","") || getParam("d","");
-    const ciaP = getParam("cia","") || getParam("c","");
+    // Captura parâmetros
+    const origemP = getParam("origem") || getParam("o", "");
+    const destinoP = getParam("destino") || getParam("d", "");
+    const ciaP = getParam("cia") || getParam("c", "");
+    const valorP = getParam("valor") || formatCentsToBRL(getParam("v", ""));
+    const idasP = getParam("idas") ? splitList(getParam("idas")) : parseCompactDates(getParam("i", ""));
+    const voltasP = getParam("voltas") ? splitList(getParam("voltas")) : parseCompactDates(getParam("r", ""));
+    const refP = getParam("ref", "sem_ref");
+    const linkAereoP = getParam("la", ""); // Captura o Link da Cia
 
-    const valorOld = getParam("valor","");
-    const valorCompact = formatCentsToBRL(getParam("v",""));
-    const valorP = valorOld || valorCompact;
-
-    const idasOld = getParam("idas","");
-    const voltasOld = getParam("voltas","");
-    const idasP = idasOld ? splitList(idasOld) : parseCompactDates(getParam("i",""));
-    const voltasP = voltasOld ? splitList(voltasOld) : parseCompactDates(getParam("r",""));
-
-    const refP = getParam("ref","sem_ref");
-
-    // NOVA VARIÁVEL: Captura o link da companhia aérea
-    const linkAereoP = getParam("la", "");
-
+    // Preenche campos
     document.getElementById("origem").value = origemP;
     document.getElementById("destino").value = destinoP;
     document.getElementById("cia").value = ciaP;
-
-    const rotaTopo = (origemP && destinoP) ? (origemP + " → " + destinoP) : "Origem → Destino";
-    document.getElementById("rotaTopo").textContent = rotaTopo;
+    document.getElementById("rotaTopo").textContent = (origemP && destinoP) ? `${origemP} → ${destinoP}` : "Origem → Destino";
     document.getElementById("valorTopo").textContent = "Valor do alerta: " + money(valorP);
     document.getElementById("refTopo").textContent = "ref: " + refP;
 
@@ -91,64 +235,33 @@
 
     const malaSel = document.getElementById("mala");
     const malaInfo = document.getElementById("malaInfo");
-    function toggleMalaInfo(){
-      malaInfo.style.display = (malaSel.value === "Sim") ? "block" : "none";
-    }
-    malaSel.addEventListener("change", toggleMalaInfo);
-    toggleMalaInfo();
-
-    function buildMessage(){
-      const nome = document.getElementById("nome").value.trim();
-      const origem = document.getElementById("origem").value.trim();
-      const destino = document.getElementById("destino").value.trim();
-      const cia = document.getElementById("cia").value.trim();
-      const ida = document.getElementById("ida").value.trim();
-      const volta = document.getElementById("volta").value.trim();
-      const adultos = document.getElementById("adultos").value;
-      const criancas = document.getElementById("criancas").value;
-      const bebes = document.getElementById("bebes").value;
-      const mala = document.getElementById("mala").value;
-      const obs = document.getElementById("obs").value.trim();
-
-      const linhas = [];
-      linhas.push("Desejo emitir este alerta.");
-      linhas.push("ref: " + refP);
-      if(origem && destino) linhas.push("Trecho: " + origem + " → " + destino);
-      if(cia) linhas.push("Companhia: " + cia);
-      if(valorP) linhas.push("Valor do alerta: " + money(valorP));
-      if(ida) linhas.push("Ida: " + ida);
-      if(volta) linhas.push("Volta: " + volta);
-      linhas.push("Nome: " + nome);
-      linhas.push("Adultos: " + adultos);
-      linhas.push("Crianças: " + criancas);
-      linhas.push("Bebês: " + bebes);
-      linhas.push("Solicita mala 23kg: " + mala + (mala === "Sim" ? " (ciente de adicional)" : ""));
-      if(obs) linhas.push("Obs: " + obs);
-      
-      // INCLUI O LINK DA COMPANHIA NO FINAL DA MENSAGEM
-      if(linkAereoP) {
-        linhas.push(""); // Linha em branco para separar
-        linhas.push("🔗 LINK DIRETO DA CIA:");
-        linhas.push(linkAereoP);
-      }
-
-      return linhas.join("\n");
-    }
+    malaSel.addEventListener("change", () => malaInfo.style.display = (malaSel.value === "Sim" ? "block" : "none"));
 
     document.getElementById("enviar").addEventListener("click", () => {
       const nome = document.getElementById("nome").value.trim();
-      const origem = document.getElementById("origem").value.trim();
-      const destino = document.getElementById("destino").value.trim();
-      const ida = document.getElementById("ida").value.trim();
-      const volta = document.getElementById("volta").value.trim();
+      const ida = document.getElementById("ida").value;
+      const volta = document.getElementById("volta").value;
 
-      if(!nome || !origem || !destino || !ida || !volta){
-        alert("Preencha Nome, Origem, Destino, Data de ida e Data de volta.");
+      if(!nome || !ida || !volta){
+        alert("Preencha Nome, Data de ida e Data de volta.");
         return;
       }
 
-      const msg = buildMessage();
-      const url = "https://wa.me/" + WHATSAPP_NUMBER + "?text=" + encodeURIComponent(msg);
-      window.open(url, "_blank");
+      let msg = `Desejo emitir este alerta.\nref: ${refP}\n`;
+      msg += `Trecho: ${document.getElementById("origem").value} → ${document.getElementById("destino").value}\n`;
+      msg += `Companhia: ${document.getElementById("cia").value}\n`;
+      msg += `Valor do alerta: ${money(valorP)}\n`;
+      msg += `Ida: ${ida}\nVolta: ${volta}\nNome: ${nome}\n`;
+      msg += `Adultos: ${document.getElementById("adultos").value}\n`;
+      msg += `Crianças: ${document.getElementById("criancas").value}\n`;
+      msg += `Bebês: ${document.getElementById("bebes").value}\n`;
+      msg += `Solicita mala 23kg: ${malaSel.value}\n`;
+      if(document.getElementById("obs").value) msg += `Obs: ${document.getElementById("obs").value}\n`;
+      
+      if(linkAereoP) msg += `\n🔗 LINK DIRETO DA CIA:\n${linkAereoP}`;
+
+      window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`, "_blank");
     });
-</script>
+  </script>
+</body>
+</html>
